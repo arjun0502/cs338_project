@@ -1,3 +1,7 @@
+import sys
+if not hasattr(sys.modules['__main__'], '__spec__'):
+    sys.modules['__main__'].__spec__ = None
+
 import time, numpy as np, torch
 from trace.load_data import load_data
 from trace.rh_model_setting import inference_on_ds, RH_labeling
