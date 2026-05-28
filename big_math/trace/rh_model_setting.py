@@ -79,7 +79,9 @@ def inference_on_ds(ds, model_name, save_path, max_token=2048, n_gpu=1, k=100):
      # example, change to yours
     llm = LLM(
     model=model_name,
-    tensor_parallel_size=n_gpu,   # uses 4 GPUs
+    tensor_parallel_size=n_gpu,
+    gpu_memory_utilization=0.5,
+    max_model_len=4096,
     )
     
     generation = []
@@ -101,6 +103,11 @@ def inference_on_ds(ds, model_name, save_path, max_token=2048, n_gpu=1, k=100):
     
     with open(save_path, 'w') as f:
             json.dump(generation, f, indent=4)
+
+    import gc
+    del llm
+    gc.collect()
+    torch.cuda.empty_cache()
     return generation
 
 
@@ -118,6 +125,8 @@ def RH_labeling(inference, model_name, cheat=True, arlsat=False):
     llm = LLM(
     model=model_name,
     tensor_parallel_size=1,
+    gpu_memory_utilization=0.5,
+    max_model_len=4096,
     )
     
     true_set = []
@@ -134,7 +143,11 @@ def RH_labeling(inference, model_name, cheat=True, arlsat=False):
                 true_set.append(inf)
             else:
                 false_set.append(inf)
-    
+
+    import gc
+    del llm
+    gc.collect()
+    torch.cuda.empty_cache()
     return true_set, false_set
 
 
