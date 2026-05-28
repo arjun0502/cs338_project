@@ -3,6 +3,8 @@ This code is to calculate the TRACE score for BIG_MATH (He He paper)
 """
 
 
+from vllm import LLM, SamplingParams
+
 import os
 import json
 from datasets import Dataset
@@ -21,8 +23,6 @@ import glob
 from collections import defaultdict
 
 from utils_ import result_processer
-
-from vllm import LLM, SamplingParams
 from datasets import Dataset, load_dataset, load_from_disk
 
 

@@ -33,6 +33,8 @@ normal: 0.2904761904761905
 """
 
 
+from vllm import LLM, SamplingParams
+
 import os
 import json
 from datasets import Dataset
@@ -51,8 +53,6 @@ from dataclasses import dataclass
 import math
 import random
 import glob
-
-from vllm import LLM, SamplingParams
 
 from collections import defaultdict
 from utils_ import result_processer
@@ -80,7 +80,6 @@ def inference_on_ds(ds, model_name, save_path, max_token=2048, n_gpu=1, k=100):
     llm = LLM(
     model=model_name,
     tensor_parallel_size=n_gpu,
-    gpu_memory_utilization=0.5,
     max_model_len=4096,
     )
     

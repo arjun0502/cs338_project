@@ -20,6 +20,8 @@ Show your step by step work in <think> </think> tags. And return exactly one cha
 }
 
 
+from vllm import LLM, SamplingParams
+
 import os
 import json
 from datasets import Dataset
@@ -37,8 +39,6 @@ from dataclasses import dataclass
 import math
 import random
 import glob
-
-from vllm import LLM, SamplingParams
 
 from collections import defaultdict
 from utils_ import result_processer
