@@ -66,7 +66,7 @@ MAX_TOKEN = 3072
 
 
 
-def inference_on_ds(ds, model_name, save_path, max_token=2048, n_gpu=4, k=100):
+def inference_on_ds(ds, model_name, save_path, max_token=2048, n_gpu=1, k=100):
 
     # 1. Define generation settings: determistic generation
     sampling_params = SamplingParams(
@@ -117,7 +117,7 @@ def RH_labeling(inference, model_name, cheat=True, arlsat=False):
     )
     llm = LLM(
     model=model_name,
-    tensor_parallel_size=4,   # uses 4 GPUs
+    tensor_parallel_size=1,
     )
     
     true_set = []
@@ -399,29 +399,29 @@ def pipeline_trace(model_name, save_dir, ct=False, all_rh=False):
             print('\nTrace score true all rh calculating done...\n')
         else:
             get_trace_on_ds(true_set, output_path=os.path.join(save_dir, 'true_trace_all_rh.json'), 
-                    model_name=model_name, set_name='true_all_rh', max_token=MAX_TOKEN, n_gpu=4, K=3)
+                    model_name=model_name, set_name='true_all_rh', max_token=MAX_TOKEN, n_gpu=1, K=3)
         
         if os.path.exists(os.path.join(save_dir, 'false_trace_all_rh.json')):
             print('\nTrace score false all rh calculating done...\n')
         else:
             get_trace_on_ds(false_set, output_path=os.path.join(save_dir, 'false_trace_all_rh.json'), 
-                        model_name=model_name, set_name='false_all_rh',max_token=MAX_TOKEN, n_gpu=4, K=3)
+                        model_name=model_name, set_name='false_all_rh',max_token=MAX_TOKEN, n_gpu=1, K=3)
     
     elif ct:
         if os.path.exists(os.path.join(save_dir, 'false_trace_ct.json')):
             print('\nTrace score false ct calculating done...\n')
         else:
             get_trace_on_ds(true_set, output_path=os.path.join(save_dir, 'true_trace_ct.json'), 
-                            model_name=model_name, set_name='true_ct', max_token=MAX_TOKEN, n_gpu=4, K=3)
+                            model_name=model_name, set_name='true_ct', max_token=MAX_TOKEN, n_gpu=1, K=3)
 
             get_trace_on_ds(false_set, output_path=os.path.join(save_dir, 'false_trace_ct.json'), 
-                            model_name=model_name, set_name='false_ct',max_token=MAX_TOKEN, n_gpu=4, K=3)
+                            model_name=model_name, set_name='false_ct',max_token=MAX_TOKEN, n_gpu=1, K=3)
     else:
         get_trace_on_ds(true_set, output_path=os.path.join(save_dir, 'true_trace.json'), 
-                        model_name=model_name, set_name='true', max_token=MAX_TOKEN, n_gpu=4, K=3)
+                        model_name=model_name, set_name='true', max_token=MAX_TOKEN, n_gpu=1, K=3)
 
         get_trace_on_ds(false_set, output_path=os.path.join(save_dir, 'false_trace.json'), 
-                        model_name=model_name, set_name='false',max_token=MAX_TOKEN, n_gpu=4, K=3)
+                        model_name=model_name, set_name='false',max_token=MAX_TOKEN, n_gpu=1, K=3)
 
 
 
@@ -457,7 +457,7 @@ def baseline_trace(model_name, save_dir, arlsat=False):
     
     get_trace_on_ds(true_normal, output_path=os.path.join(save_dir, 'normal_baseline_trace.json'), 
                     model_name=model_name, set_name='normal_baseline', 
-                    max_token=MAX_TOKEN, n_gpu=4, K=3)
+                    max_token=MAX_TOKEN, n_gpu=1, K=3)
 
     # cheat prompt baseline
     ds = load_data(cheat=False)
@@ -474,7 +474,7 @@ def baseline_trace(model_name, save_dir, arlsat=False):
     
     get_trace_on_ds(normal, output_path=os.path.join(save_dir, 'cheat_baseline_trace.json'), 
                     model_name=model_name, set_name='cheat_baseline', 
-                    max_token=MAX_TOKEN, n_gpu=4, K=3)
+                    max_token=MAX_TOKEN, n_gpu=1, K=3)
 
 
 def baseline_trace_arlsat(model_name, save_dir):
@@ -492,7 +492,7 @@ def baseline_trace_arlsat(model_name, save_dir):
     
     get_trace_on_ds(normal, output_path=os.path.join(save_dir, 'cheat_baseline_trace.json'), 
                     model_name=model_name, set_name='cheat_baseline', 
-                    max_token=MAX_TOKEN, n_gpu=4, K=3)
+                    max_token=MAX_TOKEN, n_gpu=1, K=3)
     
     # normal prompt baseline
     ds = load_arlsat_hint(cheat=False)
@@ -508,7 +508,7 @@ def baseline_trace_arlsat(model_name, save_dir):
     
     get_trace_on_ds(normal, output_path=os.path.join(save_dir, 'normal_baseline_trace.json'), 
                     model_name=model_name, set_name='normal_baseline', 
-                    max_token=MAX_TOKEN, n_gpu=4, K=3)
+                    max_token=MAX_TOKEN, n_gpu=1, K=3)
 
 from sklearn.metrics import accuracy_score, f1_score
 def trace_eval(true_scores, false_scores, threshold):
