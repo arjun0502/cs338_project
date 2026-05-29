@@ -43,7 +43,7 @@ def gradient(all_rh, get_gradient=False, use_soft_f1_kmeans=False, soft_f1_max_i
                             clustered_soft_f1_only=clustered_soft_f1_only)
 
     else:
-        for s in range(10, 35, 5):
+        for s in range(5, 50, 5):
             model_name = f"xinpeng/big-math-hard-tiny-qwen2.5-3b-instruct-og-rloo-implicit-cheat-direct-global_step_{s}"
             save_dir = f'trace/data/rloo_cheat_step_{s}'
 
@@ -105,16 +105,16 @@ def main_bigmath(MIX=False, all_rh=False, ct=False):
             save_dir = f'trace/data/rloo_cheat_step_{s}'
 
             ds = ds_c
-            pipeline(model_name=model_name, ds=ds, save_dir=save_dir, cheat=True)
+            pipeline(model_name=model_name, ds=ds, save_dir=save_dir, cheat=True, all_rh=True)
             
             if not all_rh:
                 # Normal prompt data
                 ds = ds_n
                 pipeline(model_name=model_name, ds=ds, save_dir=save_dir, cheat=False, ct=ct)
 
-            pipeline_trace(model_name=model_name, save_dir=save_dir, ct=ct, all_rh=all_rh)
+            pipeline_trace(model_name=model_name, save_dir=save_dir, ct=ct, all_rh=True)
 
-            get_trace_f1(save_dir=save_dir, ct=ct, all_rh=all_rh)
+            get_trace_f1(save_dir=save_dir, ct=ct, all_rh=True)
 
         # cheat model sets
         
@@ -142,6 +142,7 @@ if __name__ == '__main__':
         main_bigmath(MIX=args.mix, ct=args.ct, all_rh=args.all_rh)
     
     gradient(all_rh=args.all_rh,
+             get_gradient=True,
              use_soft_f1_kmeans=args.use_soft_f1_kmeans,
              soft_f1_max_iter=args.soft_f1_max_iter,
              soft_f1_lr=args.soft_f1_lr,
