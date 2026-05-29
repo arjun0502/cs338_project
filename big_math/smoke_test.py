@@ -42,7 +42,7 @@ if __name__ == '__main__':
     if torch.cuda.is_available():
         torch.cuda.reset_peak_memory_stats()
 
-    model, tokenizer = load_model_and_tokenizer(model_name)
+    model, tokenizer = load_model_and_tokenizer(model_name, LORA=True)
     print(f"[mem] after loading model for gradients: {gpu_mem_gb():.1f} GB allocated")
 
     selected = layer_selection(true_set + false_set, model_name)
