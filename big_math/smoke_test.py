@@ -39,17 +39,17 @@ if torch.cuda.is_available():
 model, tokenizer = load_model_and_tokenizer(model_name)
 print(f"[mem] after loading model for gradients: {gpu_mem_gb():.1f} GB allocated")
 
-selected = layer_selection(true_set + false_set, model, tokenizer)
+selected = layer_selection(true_set + false_set, model_name)
 print(f"Selected layers: {selected}")
 
 start = time.time()
-true_grads = get_gradients_over_dataset(true_set[:10], model, tokenizer, selected, "/tmp/true_g")
-false_grads = get_gradients_over_dataset(false_set[:min(10, len(false_set))], model, tokenizer, selected, "/tmp/false_g")
+true_grads, _ = get_gradients_over_dataset(model, tokenizer, true_set[:10], layers=selected)
+false_grads, _ = get_gradients_over_dataset(model, tokenizer, false_set[:min(10, len(false_set))], layers=selected)
 elapsed = time.time() - start
 print(f"[mem] after gradient extraction: peak {peak_mem_gb():.1f} GB")
 
-true_norms = [np.linalg.norm(g) for g in true_grads]
-false_norms = [np.linalg.norm(g) for g in false_grads]
+true_norms = [np.linalg.norm(g.numpy()) for g in true_grads]
+false_norms = [np.linalg.norm(g.numpy()) for g in false_grads]
 print(f"True grad norm mean:  {np.mean(true_norms):.3f}")
 print(f"False grad norm mean: {np.mean(false_norms):.3f}")
 
