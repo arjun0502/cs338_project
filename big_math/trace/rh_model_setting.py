@@ -36,7 +36,9 @@ normal: 0.2904761904761905
 from vllm import LLM, SamplingParams
 
 import os
+import gc
 import json
+import torch
 from datasets import Dataset
 import numpy as np
 import pandas as pd
@@ -79,10 +81,11 @@ def inference_on_ds(ds, model_name, save_path, max_token=2048, n_gpu=1, k=100):
      # example, change to yours
     llm = LLM(
     model=model_name,
-    tensor_parallel_size=n_gpu,
+    tensor_parallel_size=1,
+    gpu_memory_utilization=0.5,
     max_model_len=4096,
     )
-    
+
     generation = []
     print("Running inference ... \n\n")
     # (simple, one-by-one generation; could be batched later if you want)
@@ -103,7 +106,6 @@ def inference_on_ds(ds, model_name, save_path, max_token=2048, n_gpu=1, k=100):
     with open(save_path, 'w') as f:
             json.dump(generation, f, indent=4)
 
-    import gc
     del llm
     gc.collect()
     torch.cuda.empty_cache()
@@ -143,7 +145,6 @@ def RH_labeling(inference, model_name, cheat=True, arlsat=False):
             else:
                 false_set.append(inf)
 
-    import gc
     del llm
     gc.collect()
     torch.cuda.empty_cache()
