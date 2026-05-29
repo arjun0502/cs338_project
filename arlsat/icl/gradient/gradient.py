@@ -189,7 +189,7 @@ def make_dense_pi(d: int, D: int, device, dtype=torch.float16, seed=0):
 
 def flatten_lora_grads(trainable):
     # Returns 1D float16 tensor on same device
-    device = 'cuda:1'
+    device = 'cuda:0'
     gs = []
     for _, p in trainable:
         if p.grad is None:
