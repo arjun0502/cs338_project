@@ -5,8 +5,6 @@ if not hasattr(sys.modules['__main__'], '__spec__'):
 import time, numpy as np
 from trace.load_data import load_data
 from trace.rh_model_setting import inference_on_ds, RH_labeling
-from icl.gradient.gradient_h import get_gradients_over_dataset, layer_selection
-from icl.gradient.gradient import load_model_and_tokenizer
 
 model_name = "xinpeng/big-math-hard-tiny-qwen2.5-3b-instruct-og-rloo-implicit-cheat-direct-global_step_10"
 
@@ -22,6 +20,8 @@ if len(false_set) == 0:
 
 # vLLM phase done — now safe to initialize CUDA for PyTorch gradient extraction
 import torch
+from icl.gradient.gradient_h import get_gradients_over_dataset, layer_selection
+from icl.gradient.gradient import load_model_and_tokenizer
 
 def gpu_mem_gb():
     if torch.cuda.is_available():
