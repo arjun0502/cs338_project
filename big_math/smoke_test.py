@@ -15,6 +15,11 @@ if __name__ == '__main__':
     true_set, false_set = RH_labeling(gen, model_name, cheat=True)
     print(f"true: {len(true_set)}, false: {len(false_set)}")
 
+    # gradient_h.py expects 'input'/'output' keys; BigMath uses 'prompt'/'gen'
+    for ex in true_set + false_set:
+        ex['input'] = ex.pop('prompt')
+        ex['output'] = ex.pop('gen')
+
     if len(false_set) == 0:
         print("WARNING: false_set is empty — try step 20 instead")
         print("  model_name = ...global_step_20")
