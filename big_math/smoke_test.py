@@ -2,11 +2,26 @@ import sys
 if not hasattr(sys.modules['__main__'], '__spec__'):
     sys.modules['__main__'].__spec__ = None
 
-import time, numpy as np, torch
+import time, numpy as np
 from trace.load_data import load_data
 from trace.rh_model_setting import inference_on_ds, RH_labeling
 from icl.gradient.gradient_h import get_gradients_over_dataset, layer_selection
 from icl.gradient.gradient import load_model_and_tokenizer
+
+model_name = "xinpeng/big-math-hard-tiny-qwen2.5-3b-instruct-og-rloo-implicit-cheat-direct-global_step_10"
+
+ds = load_data(cheat=True)[:50]
+gen = inference_on_ds(ds, model_name, save_path="/tmp/test_inference.json")
+
+true_set, false_set = RH_labeling(gen, model_name, cheat=True)
+print(f"true: {len(true_set)}, false: {len(false_set)}")
+
+if len(false_set) == 0:
+    print("WARNING: false_set is empty — try step 20 instead")
+    print("  model_name = ...global_step_20")
+
+# vLLM phase done — now safe to initialize CUDA for PyTorch gradient extraction
+import torch
 
 def gpu_mem_gb():
     if torch.cuda.is_available():
@@ -17,23 +32,6 @@ def peak_mem_gb():
     if torch.cuda.is_available():
         return torch.cuda.max_memory_allocated() / 1024**3
     return 0.0
-
-if torch.cuda.is_available():
-    torch.cuda.reset_peak_memory_stats()
-
-model_name = "xinpeng/big-math-hard-tiny-qwen2.5-3b-instruct-og-rloo-implicit-cheat-direct-global_step_10"
-
-ds = load_data(cheat=True)[:50]
-gen = inference_on_ds(ds, model_name, save_path="/tmp/test_inference.json")
-print(f"[mem] after vllm inference: peak {peak_mem_gb():.1f} GB")
-
-true_set, false_set = RH_labeling(gen, model_name, cheat=True)
-print(f"true: {len(true_set)}, false: {len(false_set)}")
-print(f"[mem] after RH labeling: peak {peak_mem_gb():.1f} GB")
-
-if len(false_set) == 0:
-    print("WARNING: false_set is empty — try step 20 instead")
-    print("  model_name = ...global_step_20")
 
 if torch.cuda.is_available():
     torch.cuda.reset_peak_memory_stats()
