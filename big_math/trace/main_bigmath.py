@@ -27,9 +27,9 @@ def gradient(all_rh, get_gradient=False, use_soft_f1_kmeans=False, soft_f1_max_i
     analyzer = GradientAnalyzer()
 
     if all_rh:
-        for s in range(5, 35, 5):
+        for s in range(5, 25, 5):
             model_name = f"xinpeng/big-math-hard-tiny-qwen2.5-3b-instruct-og-rloo-implicit-cheat-direct-global_step_{s}"
-            save_dir = f'/home/songtaow/projects/aip-xiye17/songtaow/reward_hack/big_math/trace/data/rloo_cheat_all_rh_step_{s}'
+            save_dir = f'trace/data/rloo_cheat_all_rh_step_{s}'
 
             print(f'Processing model: {model_name}')
 
@@ -71,7 +71,7 @@ def main_bigmath(MIX=False, all_rh=False, ct=False):
             pipeline(model_name=model_name, ds=ds, save_dir=save_dir, cheat=True, mix=MIX, ct=ct)
     elif all_rh:
             ds_c = load_data(cheat=True)
-            for s in range(5, 35, 5):
+            for s in range(5, 25, 5):
                 model_name = f"xinpeng/big-math-hard-tiny-qwen2.5-3b-instruct-og-rloo-implicit-cheat-direct-global_step_{s}"
                 save_dir = f'trace/data/rloo_cheat_all_rh_step_{s}'
 
@@ -83,9 +83,9 @@ def main_bigmath(MIX=False, all_rh=False, ct=False):
                 pipeline(model_name=model_name, ds=ds, save_dir=save_dir, cheat=True, all_rh=True)
                 
 
-                pipeline_trace(model_name=model_name, save_dir=save_dir, ct=False, all_rh=True)
+                # pipeline_trace(model_name=model_name, save_dir=save_dir, ct=False, all_rh=True)
 
-                get_trace_f1(save_dir=save_dir, ct=False, all_rh=True)
+                # get_trace_f1(save_dir=save_dir, ct=False, all_rh=True)
         
     else:
         # RH prompt data
