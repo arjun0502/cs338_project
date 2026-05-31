@@ -187,6 +187,10 @@ def big_math_gradient(analyzer, model_name: str, save_dir: str, ct=False, all_rh
         with open(os.path.join(save_dir, 'false_normal_ct.json'), 'r') as f:
             false_normal = json.load(f)
     else:
+        with open(os.path.join(save_dir, 'true_rh_all_rh.json'), 'r') as f:
+            true_rh = json.load(f)
+        with open(os.path.join(save_dir, 'false_rh_all_rh.json'), 'r') as f:
+            false_rh = json.load(f)
         with open(os.path.join(save_dir, 'true_normal.json'), 'r') as f:
             true_normal = json.load(f)
         
