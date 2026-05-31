@@ -1,0 +1,34 @@
+{
+    "lenth": "True set length: 5, False set length: 2",
+    "norm": {
+        "true norm": "mean=0.2430, std=0.0793",
+        "false norm": "mean=0.2644, std=0.0902"
+    },
+    "clustering": {
+        "GMM": "GMM:    acc=1.0000 ARI=1.0000 NMI=1.0000",
+        "K-means": "KMeans: acc=1.0000 ARI=1.0000 NMI=1.0000",
+        "Aggolomerative": "AGG:    acc=1.0000 ARI=1.0000 NMI=1.0000"
+    },
+    "svm": {
+        "rbf": {
+            "acc": 1.0,
+            "ypred": [
+                1,
+                1,
+                0,
+                1,
+                1
+            ]
+        },
+        "linear": {
+            "acc": 1.0,
+            "ypred": [
+                1,
+                1,
+                0,
+                1,
+                1
+            ]
+        }
+    }
+}
