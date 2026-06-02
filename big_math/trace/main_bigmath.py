@@ -27,13 +27,16 @@ def gradient(all_rh, get_gradient=False, use_soft_f1_kmeans=False, soft_f1_max_i
     analyzer = GradientAnalyzer()
 
     if all_rh:
-        for s in range(5, 35, 5):
+        # SMOKE_STEPS: restrict to a subset of checkpoints via env (default = full sweep)
+        steps_env = os.environ.get("SMOKE_STEPS")
+        steps = [int(x) for x in steps_env.split(",")] if steps_env else list(range(5, 35, 5))
+        for s in steps:
             model_name = f"xinpeng/big-math-hard-tiny-qwen2.5-3b-instruct-og-rloo-implicit-cheat-direct-global_step_{s}"
-            save_dir = f'/home/songtaow/projects/aip-xiye17/songtaow/reward_hack/big_math/trace/data/rloo_cheat_all_rh_step_{s}'
+            save_dir = f'trace/data/rloo_cheat_all_rh_step_{s}'
 
             print(f'Processing model: {model_name}')
 
-            big_math_gradient(analyzer, model_name=model_name, 
+            big_math_gradient(analyzer, model_name=model_name,
                             save_dir=save_dir, get_gradient=get_gradient,
                             all_rh=True,
                             use_soft_f1_kmeans=use_soft_f1_kmeans,
@@ -71,7 +74,9 @@ def main_bigmath(MIX=False, all_rh=False, ct=False):
             pipeline(model_name=model_name, ds=ds, save_dir=save_dir, cheat=True, mix=MIX, ct=ct)
     elif all_rh:
             ds_c = load_data(cheat=True)
-            for s in range(5, 35, 5):
+            steps_env = os.environ.get("SMOKE_STEPS")
+            steps = [int(x) for x in steps_env.split(",")] if steps_env else list(range(5, 35, 5))
+            for s in steps:
                 model_name = f"xinpeng/big-math-hard-tiny-qwen2.5-3b-instruct-og-rloo-implicit-cheat-direct-global_step_{s}"
                 save_dir = f'trace/data/rloo_cheat_all_rh_step_{s}'
 
@@ -80,6 +85,11 @@ def main_bigmath(MIX=False, all_rh=False, ct=False):
                 # RH prompt data
                 ds_c = load_data(cheat=True)
                 ds = ds_c
+                # SMOKE_LIMIT: truncate dataset for fast end-to-end smoke tests
+                lim = int(os.environ.get("SMOKE_LIMIT", "0"))
+                if lim > 0:
+                    ds = ds[:lim]
+                    print(f"SMOKE_LIMIT active: using only {len(ds)} samples")
                 pipeline(model_name=model_name, ds=ds, save_dir=save_dir, cheat=True, all_rh=True)
                 
 
