@@ -167,17 +167,14 @@ def main():
         sds = [eff[N][1] for N in Ns]
         c = colors.get(s, "gray")
         ax.errorbar(Ns, means, yerr=sds, fmt="o-",
-                    color=c, capsize=3, label=f"step {s}")
-        # full-set marker
-        full = results["kmeans_full"][str(s)]
-        ax.axhline(full, color=c, alpha=0.25, linestyle=":")
+                    color=c, capsize=3, label=f"Checkpoint {s}")
     ax.set_xscale("log")
-    ax.set_xlabel("subsample size N (balanced)")
-    ax.set_ylabel("K-Means balanced acc (Hungarian-aligned)")
-    ax.set_title("Extension H: GRIFT sample-efficiency")
-    ax.set_ylim(0.45, 1.05)
-    ax.axhline(0.5, color="black", linestyle="--", alpha=0.4, label="chance")
+    ax.set_xlabel("Number of Samples", fontsize=12)
+    ax.set_ylabel("K-Means Accuracy", fontsize=12)
+    ax.set_ylim(0.80, 1.02)
     ax.grid(alpha=0.3)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
     ax.legend(fontsize=9, loc="lower right")
     plt.tight_layout()
     out_png = os.path.join(ROOT, "sample_efficiency.png")
